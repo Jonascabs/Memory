@@ -55,8 +55,74 @@ void Pattern:: write_control()
 //write Zero
 void Pattern::write_zero()
 {
-	uint32_t memory_adress[32];
+	//Address Pins Setup
+	pinMode(22, OUTPUT);
+	pinMode(24, OUTPUT);
+	pinMode(26, OUTPUT);
+	pinMode(28, OUTPUT);
+	pinMode(30, OUTPUT);
+	pinMode(32, OUTPUT);
+	pinMode(34, OUTPUT);
+	pinMode(36, OUTPUT);
+	pinMode(38, OUTPUT);
+	pinMode(40, OUTPUT);
+	pinMode(42, OUTPUT);
+	pinMode(44, OUTPUT);
+	pinMode(46, OUTPUT);
+	pinMode(48, OUTPUT);
+	pinMode(50, OUTPUT);
+	pinMode(52, OUTPUT);
+	pinMode(54, OUTPUT);
+
+	//Data Pins Setup 		
+	pinMode(25, OUTPUT);	//D0
+	pinMode(27, OUTPUT);	//D1
+	pinMode(29, OUTPUT);	//D2
+	pinMode(31, OUTPUT);	//D3
+	pinMode(33, OUTPUT);	//D4
+	pinMode(35, OUTPUT);	//D5
+	pinMode(37, OUTPUT);	//D6
+	pinMode(39, OUTPUT);	//D7	
 	
+	
+	
+			// Setting up the address
+			uint8_t mem_address;
+	
+			uint8_t memory_address[16];
+			// address for x column
+			uint8_t	memory_address_x[8];
+			for(i=0; i<8; i++){
+				memory_address_x[i] = bitread(mem_address,i);
+				memory_address[i]	= bitread(mem_address,i);
+			}
+			
+			// address for y column
+			uint8_t	memory_address_y[8];
+			for(i=0; i<8; i++){
+				memory_address_x[i] = bitread(mem_address,i);
+				memory_address[i+8]	= bitread(mem_address,i);
+			}
+			
+	
+
+	// writing zeroes to the memory locations
+	for(int i; i<65536; i++)
+	{
+			//address
+			int x=22;
+			for(int j; j<16;j++)
+			{
+				
+				digitalWrite((x+j),memory_address[j]);
+				
+			}
+	}
+
+	
+	
+	
+	/*
 	uint32_t A_0 = 22;
 	uint32_t A_1 = 24;
 	uint32_t A_2 = 26;
@@ -74,28 +140,11 @@ void Pattern::write_zero()
 	uint32_t A_14 = 50;
 	uint32_t A_15 = 52;
 	uint32_t A_16 = 23;
+	*/
 	
 	
 	
-	//Address Setup
-	pinMode(A_0, OUTPUT);
-	pinMode(A_1, OUTPUT);
-	pinMode(A_2, OUTPUT);
-	pinMode(A_3, OUTPUT);
-	pinMode(A_4, OUTPUT);
-	pinMode(A_5, OUTPUT);
-	pinMode(A_6, OUTPUT);
-	pinMode(A_7, OUTPUT);
-	pinMode(A_8, OUTPUT);
-	pinMode(A_9, OUTPUT);
-	pinMode(A_10, OUTPUT);
-	pinMode(A_11, OUTPUT);
-	pinMode(A_12, OUTPUT);
-	pinMode(A_13, OUTPUT);
-	pinMode(A_14, OUTPUT);
-	pinMode(A_15, OUTPUT);
-	pinMode(A_16, OUTPUT);
-	pinMode(A_17, OUTPUT);
+	
 
 	
 	// Write enable control
