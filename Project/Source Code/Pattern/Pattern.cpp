@@ -176,6 +176,7 @@ void Pattern::write_zero()
 void Pattern::write_one()    // writing ones in ascending address order
 {
 	
+	
 	write_control();
 	
 	//Address Pins Setup
@@ -209,8 +210,29 @@ void Pattern::write_one()    // writing ones in ascending address order
 	
 	
 	
+			
+			
+			//setting up data pins
+			
+			uint8_t data_pins[8];
+			
+			// writing zeroes in the data pin array
+			
+			
+			
+	
+	
+	
+	
+	// writing ones to the memory location in ascending address order
+	for(uint8_t mem_address_y; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+			for(uint8_t mem_address_x; mem_address_x <256; mem_address_y++){
+				
 			// Setting up the address
-			uint8_t mem_address;	
+				
 			uint8_t memory_address[16];
 	
 	
@@ -221,8 +243,8 @@ void Pattern::write_one()    // writing ones in ascending address order
 	
 			for(int i=0; i<8; i++)
 			{
-				memory_address_x[i] = bitread(mem_address,i);
-				memory_address[i]	= bitread(mem_address,i);
+				memory_address_x[i] = bitread(mem_address_x,i);
+				memory_address[i]	= bitread(mem_address_x,i);
 			}
 			
 			// address for y column
@@ -230,57 +252,44 @@ void Pattern::write_one()    // writing ones in ascending address order
 	
 			for(int i=0; i<8; i++)
 			{
-				memory_address_x[i] = bitread(mem_address,i);
-				memory_address[i+8]	= bitread(mem_address,i);
+				memory_address_y[i] = bitread(mem_address_y,i);
+				memory_address[i+8]	= bitread(mem_address_y,i);
 			}
 			
+			//writing into the address pins
+			for(int j; j<16;j++)
+				{	
+				digitalWrite((22+j),memory_address[j]);				
+				}
 			
-			//setting up data pins
 			
-			uint8_t data_pins[8];
 			
-			// writing zeroes in the data pin array
 			for(int i; i<8; i++)
 			{
 				data_pins[i] = 0xFF;
 			}
 			
 			
-	
-
-	// writing ones to the memory location in ascending address order
-	for(int i; i<65536; i++)
-	{
-			//address
-			for(int j; j<16;j++)
-				{	
-				digitalWrite((22+j),memory_address[j]);				
-				}
-		
+			
+			
 			//writing zero to data pins
 			for(int k; k<8; k++)
 				{
 				digitalWrite((38+k), data_pins[k]);
-				Serial.print(data_pins[k], BIN);
+				Serial.print(data_pins[k], HEX);
 				}
-			
 			
 			
 			Serial.print("   ");	// provide spaces for each memory cell
 			
+
+				
 			
-			if(i%256==0)			// if x olumn is full print new line
-			{
-				Serial.print('\n');
 			}
+			Serial.print('\n');
 		
 	}
-	
-	
-	
-}
-
-
+}	
 				
 
 }
