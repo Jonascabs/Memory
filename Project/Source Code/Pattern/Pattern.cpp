@@ -214,7 +214,7 @@ void Pattern::write_one()    // writing ones in ascending address order
 			
 			//setting up data pins
 			
-			uint8_t data_pins[8];
+			int data_pins[8];
 			
 			// writing zeroes in the data pin array
 			
@@ -270,27 +270,27 @@ void Pattern::write_one()    // writing ones in ascending address order
 						
 						
 						//writing into the address pins
-						for(int j; j<16;j++)
+						for(int i=22; i<38;i++)
 							{	
-							digitalWrite((22+j),memory_address[j]);	
-							Serial.print(memory_address[j]);
+							digitalWrite((i),memory_address[i-22]);	
+							//Serial.print(memory_address[j]);
 							}
 						
 						
 						
 						for(int i; i<8; i++)
 						{
-							data_pins[i] = (uint8_t)(0xFF);
+							data_pins[i] = 1;
 						}
 						
 						
 						
 						
 						//writing ones to data pins
-						for(int k; k<8; k++)
+						for(int i=38; i<46; i++)
 							{
-							digitalWrite((38), HIGH);
-							Serial.print(data_pins[k], HEX);
+							digitalWrite(i, HIGH);
+							Serial.print(1);
 							}
 						
 						
