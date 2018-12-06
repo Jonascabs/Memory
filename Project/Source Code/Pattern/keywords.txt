@@ -15,7 +15,7 @@ read_control	KEYWORD2
 write_control	KEYWORD2
 write_zero	KEYWORD2
 write_one	KEYWORD2
-
+diagonal	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

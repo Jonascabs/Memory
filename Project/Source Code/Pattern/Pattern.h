@@ -18,9 +18,9 @@ class Pattern
 		
 		void write_one();
 		
-		void write_diagonal(int index_number);
+		void diagonal(uint8_t index_number);
 		
-		
+		void read();
 };
 
 #endif
