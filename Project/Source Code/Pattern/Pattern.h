@@ -21,6 +21,8 @@ class Pattern
 		void diagonal(uint8_t index_number);
 		
 		void read();
+		
+		void checkerboard();
 };
 
 #endif
