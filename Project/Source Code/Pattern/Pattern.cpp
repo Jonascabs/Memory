@@ -111,7 +111,7 @@ void Pattern::write_zero()
 			
 			Serial.print("\n");
 			
-	// writing ones to the memory location in ascending address order
+	// writing zeroes to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
 			
@@ -132,7 +132,7 @@ void Pattern::write_zero()
 						//Serial.print(mem_address_y, HEX);
 						
 						
-						Serial.print(" ");
+						//Serial.print(" ");
 						
 						for(int i=0; i<8; i++)
 						{
@@ -162,7 +162,7 @@ void Pattern::write_zero()
 						
 						for(int i; i<8; i++)
 						{
-							data_pins[i] = 1;
+							data_pins[i] = 0;
 						}
 						
 						
@@ -174,7 +174,7 @@ void Pattern::write_zero()
 							digitalWrite(i, LOW);
 							
 							}
-						Serial.print(00);
+						//Serial.print(00);
 						
 							Serial.print("   ");	// provide spaces for each memory cell
 						
@@ -285,7 +285,7 @@ void Pattern::write_one()    // writing ones in ascending address order
 							//Serial.print(memory_address_x[i]);
 						}
 						
-						//Serial.print(mem_address_x, HEX);
+						Serial.print(mem_address_x, HEX);
 						
 				
 						
@@ -317,9 +317,9 @@ void Pattern::write_one()    // writing ones in ascending address order
 							digitalWrite(i, HIGH);
 							
 							}
-						Serial.print(0xFF, HEX);
+						//Serial.print(0xFF, HEX);
 						
-							Serial.print("   ");	// provide spaces for each memory cell
+						//	Serial.print("   ");	// provide spaces for each memory cell
 						
 						
 									if(mem_address_x==255) 
@@ -542,6 +542,8 @@ void Pattern::read()
 			
 			int data_pins[8];
 			
+			uint8_t read_data;
+			
 			// writing zeroes in the data pin array
 			
 			uint8_t memory_address[16];
@@ -617,6 +619,7 @@ void Pattern::read()
 							{
 							data_pins[i-38] = digitalRead(i);
 							Serial.print(digitalRead(i));
+							
 							}
 						
 						
