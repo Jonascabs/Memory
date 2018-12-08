@@ -10,13 +10,18 @@ class Pattern
 	public:
 		Pattern();
 		
+		
+		void write_init();
+		
 		void write_control();
+		
+		void read_init();
 		
 		void read_control();
 		
-		void write_zero();
+		void background_zero();
 		
-		void write_one();
+		void background_one();
 		
 		void diagonal(uint8_t index_number);
 		
