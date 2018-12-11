@@ -19,6 +19,8 @@ class Pattern
 		
 		void read_control();
 		
+		void write_addr(int mem_address);
+		
 		void background_zero();
 		
 		void background_one();

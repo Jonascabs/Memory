@@ -93,12 +93,6 @@ void Pattern::background_zero()
 			
 
 			
-			int memory_address = 0;
-
-	
-			
-			//Serial.print("\n");
-			
 	// writing zeroes to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
@@ -106,9 +100,9 @@ void Pattern::background_zero()
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-					
+						uint16_t memory_address = (mem_address_y<<8)| (mem_address_x);;
 						write_addr(memory_address);
-						memory_address++;
+						
 							
 						//Serial.print(" ");
 						write_control();
@@ -167,7 +161,7 @@ void Pattern::background_one()    // writing ones in ascending address order
 			
 			
 	
-			uint16_t memory_address;
+			
 
 			
 	// writing ones to the memory location in ascending address order
@@ -177,9 +171,9 @@ void Pattern::background_one()    // writing ones in ascending address order
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						
+						uint16_t memory_address = (mem_address_y<<8)| (mem_address_x);;
 						write_addr(memory_address);
-						memory_address++;
+
 							
 			
 						write_control();
