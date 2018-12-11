@@ -18,8 +18,11 @@ Pattern::Pattern()
 //Read Initialize
 void Pattern::read_init()
 {
-
-	digitalWrite(49, LOW);
+	digitalWrite(46,HIGH);
+	digitalWrite(47, LOW);
+	digitalWrite(49, HIGH);
+	digitalWrite(48, LOW);	
+	;
 }
 
 //Read Control
@@ -40,8 +43,9 @@ void Pattern::read_control()
 void Pattern::write_init()
 {
 
-	
-
+	digitalWrite(46,HIGH);
+	digitalWrite(47, LOW);
+	digitalWrite(48, HIGH)
 	digitalWrite(49, HIGH);
 	
 }
@@ -54,7 +58,7 @@ void Pattern::write_control()
 
 	digitalWrite(46,LOW);
 	digitalWrite(47, HIGH);
-	digitalWrite(48, HIGH);
+	digitalWrite(48, LOW);
 	digitalWrite(49, LOW);
 
 }
@@ -90,9 +94,6 @@ void Pattern::background_zero()
 	
 	
 			
-			
-
-			
 	// writing zeroes to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
@@ -100,9 +101,9 @@ void Pattern::background_zero()
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						uint16_t memory_address = (mem_address_y<<8)| (mem_address_x);;
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
-						
+
 							
 						//Serial.print(" ");
 						write_control();
@@ -110,19 +111,18 @@ void Pattern::background_zero()
 						//writing ones to data pins
 						for(int i=38; i<46; i++)
 							{
-							digitalWrite(i, LOW);
-							
+							digitalWrite(i, LOW);	
 							}
 							
 					//delay(1);
 						
-						
+						write_init();				
+					
 						
 									if(mem_address_x==255) 
 									{
 										break;
 									}
-					write_init();				
 					
 					}
 					
@@ -159,9 +159,7 @@ void Pattern::background_one()    // writing ones in ascending address order
 	
 	
 			
-			
 	
-			
 
 			
 	// writing ones to the memory location in ascending address order
@@ -171,9 +169,9 @@ void Pattern::background_one()    // writing ones in ascending address order
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						uint16_t memory_address = (mem_address_y<<8)| (mem_address_x);;
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
-
+					
 							
 			
 						write_control();
@@ -186,13 +184,13 @@ void Pattern::background_one()    // writing ones in ascending address order
 							
 							}
 
-						
+						write_init();
 						
 									if(mem_address_x==255) 
 									{
 										break;
 									}
-					write_init();
+					
 
 					}
 	
@@ -212,8 +210,8 @@ void Pattern::diagonal(uint8_t index_number)
 {
 	Serial.println("Writing Diagonal");
 	
-	write_control();
 	
+	write_init();
 
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
@@ -241,14 +239,13 @@ void Pattern::diagonal(uint8_t index_number)
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 					
-						uint16_t memory_address_y = mem_address_y<<8;
-						uint16_t memory_address_x = mem_address_x;
-						uint16_t memory_address = memory_address_y|memory_address_x;
+						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
-						//Serial.print(memory_address);
+
 						
 						
-						
+						write_control();
 
 						//writing diagonal to data pins
 						uint8_t compare = mem_address_y + index_number;
@@ -273,9 +270,8 @@ void Pattern::diagonal(uint8_t index_number)
 							
 
 						}
-						//Serial.print(" ");
-						//write_control();
-						//write_init();
+
+						write_init();
 						
 						
 									if(mem_address_x==255) 
@@ -290,7 +286,7 @@ void Pattern::diagonal(uint8_t index_number)
 					{
 					break;
 					}
-				//Serial.print("\n");
+	
 	}
 	Serial.println("Write Done");
 }				
@@ -320,9 +316,9 @@ void Pattern::read()
 	Serial.print("   ");
 	
 	
-	for (int z=0; z<256; z++)
+	for (int header=0; header <256; header++)
 	{
-		Serial.print(z, HEX);
+		Serial.print(header, HEX);
 		Serial.print("   ");
 	}
 
@@ -338,16 +334,14 @@ void Pattern::read()
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						uint16_t memory_address_y = mem_address_y<<8;
-						uint16_t memory_address_x = mem_address_x;
-						uint16_t memory_address = memory_address_y|memory_address_x;
 						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);	
 						write_addr(memory_address);
 						
 						
 						
 						uint8_t read_data;
-						
+						read_control();	
 						//Reading data pins
 						for(int i=38; i<46; i++)
 							{
@@ -367,7 +361,7 @@ void Pattern::read()
 									//Serial.print(0);
 								}								
 							}
-						read_control();	
+						
 						Serial.print(read_data, HEX);
 						
 						Serial.print("   ");	// provide spaces for each memory cell
@@ -402,7 +396,7 @@ void Pattern::checkerboard()
 {
 	Serial.println("Writing Checkerboard");
 	
-	write_control();
+	write_init();
 	
 
 	//Data Pins Setup 		
@@ -430,15 +424,12 @@ void Pattern::checkerboard()
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						uint16_t memory_address_y = mem_address_y<<8;
-						uint16_t memory_address_x = mem_address_x;
-						uint16_t memory_address = memory_address_y|memory_address_x;
-						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
 						
 							
 
-						
+						write_control();
 						
 						uint8_t compare_x = mem_address_x & B00000001;
 						uint8_t compare_y = mem_address_y & B00000001;
@@ -449,30 +440,24 @@ void Pattern::checkerboard()
 							for(int i=38; i<46; i++)
 							{
 							digitalWrite(i, HIGH);
-							//Serial.print(1);
+							
 							}		
 						}	
 						else
-						{
-							
+						{							
 							for(int i=38; i<46; i++)
 							{
 							digitalWrite(i, LOW);	
-							//Serial.print(0);
 							}
-							
-							//Serial.print(00, HEX);
-							
-							
 						}
-						//write_control();
+						write_init();
 						
 												
-									if(mem_address_x==255) 
-									{
-										break;
-									}
-					//write_init();				
+					if(mem_address_x==255) 
+					{
+					break;
+					}
+			
 					
 					}
 					
@@ -509,8 +494,7 @@ void Pattern::column_bar()
 	
 			
 			
-						
-			uint16_t memory_address = 0;
+
 
 		
 	// writing ones to the memory location in ascending address order
@@ -520,9 +504,9 @@ void Pattern::column_bar()
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
-						memory_address++;
+						
 							
 						
 						write_control();
@@ -592,21 +576,15 @@ void Pattern::row_bar()
 	
 	
 			
-			
-						
-			uint16_t memory_address = 0;
-
-			
-	// writing ones to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
 			
 			
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
-						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
 						write_addr(memory_address);
-						memory_address++;
+
 							
 						
 						write_control();
@@ -621,7 +599,7 @@ void Pattern::row_bar()
 							digitalWrite(i, HIGH);
 							}
 							
-							//Serial.print(0xFF, HEX);
+						
 							
 						}else{
 							
@@ -703,385 +681,7 @@ void write_manual(uint16_t memory_address,uint8_t data)
 						
 }
 
-void Pattern::read_checkerBoard()
-{
-	
-	
-	read_init();
-	
 
-	
-
-	//Data Pins Setup 		
-	pinMode(38, INPUT);	//D0
-	pinMode(39, INPUT);	//D1
-	pinMode(40, INPUT);	//D2
-	pinMode(41, INPUT);	//D3
-	pinMode(42, INPUT);	//D4
-	pinMode(43, INPUT);	//D5
-	pinMode(44, INPUT);	//D6
-	pinMode(45, INPUT);	//D7	
-	
-	
-	
-			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			uint8_t read_data;
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			
-			Serial.print("\n");
-			
-	// writing ones to the memory location in ascending address order
-	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
-	{
-			
-			
-					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
-					{
-						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							
-						}
-						
-					
-				
-						
-						
-						
-						
-						
-						
-						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
-						
-						
-						read_control();
-						
-						
-					
-							
-							
-						uint8_t compare_x = memory_address_x[7] & B00000001;
-						uint8_t compare_y = memory_address_y[7] & B00000001;
-						uint8_t compare_result = compare_x ^ compare_y;
-						
-						if(compare_result == 1)
-						{ 
-							//Reading data pins
-							for(int i=38; i<46; i++)
-								{
-									data_pins[i-38] = digitalRead(i);
-									
-									if((digitalRead(i)) == 1){
-										
-										bitWrite(read_data,(i-38),1);
-										
-									}else{
-										
-										bitWrite(read_data,(i-38),0);
-										
-									}								
-								}
-								
-							
-							if(read_data != 0xFF){
-								Serial.println("Wrong Data on:");
-								Serial.print("Address:" );
-								Serial.print(mem_address_y, HEX);
-								Serial.print(mem_address_x, HEX);
-								Serial.print("Data read");
-								Serial.print(read_data, HEX);
-							}
-							
-						}else{
-							
-							//Reading data pins
-							for(int i=38; i<46; i++)
-								{
-									data_pins[i-38] = digitalRead(i);
-									
-									if((digitalRead(i)) == 1){
-										
-										bitWrite(read_data,(i-38),1);
-										
-									}else{
-										
-										bitWrite(read_data,(i-38),0);
-										
-									}								
-								}
-							
-								if(read_data != 0x00)
-								{
-									Serial.println("Wrong Data on:");
-									Serial.print("Address:" );
-									Serial.print(mem_address_y, HEX);
-									Serial.print(mem_address_x, HEX);
-									Serial.print("Data read");
-									Serial.print(read_data, HEX);
-									}
-
-							
-						}
-							
-						
-							
-						
-									if(mem_address_x==255) 
-									{
-										break;
-									}
-					}
-					
-			
-		
-					Serial.print('\n');
-					
-					if(mem_address_y==255) 
-					{
-					break;
-					}
-	}	
-	
-	
-	
-	
-}
-
-void Pattern::read_diagonal(uint8_t index_number)
-{
-	
-	
-	read_init();
-	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
-
-	//Data Pins Setup 		
-	pinMode(38, INPUT);	//D0
-	pinMode(39, INPUT);	//D1
-	pinMode(40, INPUT);	//D2
-	pinMode(41, INPUT);	//D3
-	pinMode(42, INPUT);	//D4
-	pinMode(43, INPUT);	//D5
-	pinMode(44, INPUT);	//D6
-	pinMode(45, INPUT);	//D7	
-	
-	
-	
-			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			uint8_t read_data;
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			
-			Serial.print("\n");
-			
-	// writing ones to the memory location in ascending address order
-	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
-	{
-			
-			
-					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
-					{
-						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
-						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
-						
-						
-						read_control();
-						
-						
-					
-							
-						//writing diagonal to data pins
-						uint8_t compare = mem_address_y + index_number;
-						
-						if(mem_address_x == compare)
-						{
-							//Reading data pins
-							for(int i=38; i<46; i++)
-								{
-									data_pins[i-38] = digitalRead(i);
-									
-									if((digitalRead(i)) == 1){
-										
-										bitWrite(read_data,(i-38),1);
-										
-									}else{
-										
-										bitWrite(read_data,(i-38),0);
-										
-									}								
-								}
-								
-							if(read_data != 0xFF)
-							{
-									Serial.println("Wrong Data on:");
-									Serial.print("Address:" );
-									Serial.print(mem_address_y, HEX);
-									Serial.print(mem_address_x, HEX);
-									Serial.println("Data read:");
-									Serial.print(read_data, HEX);
-							}
-								
-								
-							
-						}else{
-							//Reading data pins
-							for(int i=38; i<46; i++)
-								{
-									data_pins[i-38] = digitalRead(i);
-									
-									if( (digitalRead(i)) == 1){
-										
-										bitWrite(read_data,(i-38),1);
-										
-									}else{
-										
-										bitWrite(read_data,(i-38),0);
-										
-									}								
-								}
-							
-							if(read_data != 0x00)
-							{
-									Serial.println("Wrong Data on:");
-									Serial.print("Address:" );
-									Serial.print(mem_address_y, HEX);
-									Serial.print(mem_address_x, HEX);
-									Serial.println("Data read:");
-									Serial.print(read_data, HEX);
-							}		
-
-								
-						}
-						
-						
-							
-								
-							
-						
-							
-						
-									if(mem_address_x==255) 
-									{
-										break;
-									}
-					}
-					
-			
-		
-					//Serial.print('\n');
-					
-					if(mem_address_y==255) 
-					{
-					break;
-					}
-	}	
-}
-	
 
 
 

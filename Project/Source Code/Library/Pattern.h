@@ -37,10 +37,7 @@ class Pattern
 		
 		void write_manual(uint16_t memory_address, uint8_t data);
 		
-		void read_checkerBoard();
-		
-		void read_diagonal(uint8_t index_number);
-		
+
 
 };
 
