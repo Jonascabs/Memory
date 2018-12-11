@@ -1,0 +1,26 @@
+#######################################
+# Syntax Coloring Map Servo
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Pattern	KEYWORD1	pattern
+pattern	KEYWORD1	pattern
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+read_control	KEYWORD2
+write_control	KEYWORD2
+background_zero	KEYWORD2
+background_one	KEYWORD2
+diagonal	KEYWORD2
+checkerboard	KEYWORD2
+column_bar	KEYWORD2
+row_bar	KEYWORD2
+read_diagonal	KEYWORD2
+#######################################
+# Constants (LITERAL1)
+#######################################
