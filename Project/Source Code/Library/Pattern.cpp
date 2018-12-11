@@ -9,7 +9,10 @@ const int Chip_Enable2 = 47;
 const int Output_enable = 48;
 const int Write_enable  = 49;
 
-
+	pinMode(Chip_Enable1, OUTPUT);
+	pinMode(Chip_Enable2, OUTPUT);
+	pinMode(Output_enable, OUTPUT);
+	pinMode(Write_enable, OUTPUT);
 //<<constructor>>
 Pattern::Pattern()
 {
@@ -21,10 +24,7 @@ Pattern::Pattern()
 //Read Initialize
 void Pattern::read_init()
 {
-	pinMode(Chip_Enable1, OUTPUT);
-	pinMode(Chip_Enable2, OUTPUT);
-	pinMode(Output_enable, OUTPUT);
-	pinMode(Write_enable, OUTPUT);
+	
 	
 	digitalWrite(Chip_Enable1,HIGH);
 	digitalWrite(Chip_Enable2, LOW);
@@ -35,11 +35,7 @@ void Pattern::read_init()
 //Read Control
 void Pattern::read_control()
 {
-	
-	pinMode(Chip_Enable1, OUTPUT);
-	pinMode(Chip_Enable2, OUTPUT);
-	pinMode(Output_enable, OUTPUT);
-	pinMode(Write_enable, OUTPUT);
+
 	
 	digitalWrite(Chip_Enable1,LOW);
 	digitalWrite(Chip_Enable2, HIGH);
@@ -69,12 +65,7 @@ void Pattern::write_init()
 void Pattern::write_control()
 {
 	
-	
-	pinMode(Chip_Enable1, OUTPUT);
-	pinMode(Chip_Enable2, OUTPUT);
-	pinMode(Output_enable, OUTPUT);
-	pinMode(Write_enable, OUTPUT);
-	
+
 	digitalWrite(Chip_Enable1,LOW);
 	digitalWrite(Chip_Enable2, HIGH);
 	digitalWrite(Write_enable, LOW);
@@ -90,25 +81,7 @@ void Pattern::background_zero()	  // writing ones in ascending address order
 	
 	Serial.println("Writing Background One");
 	write_init();
-	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
+
 
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
@@ -123,23 +96,11 @@ void Pattern::background_zero()	  // writing ones in ascending address order
 	
 	
 			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
 	
+			uint16_t memory_address=0;
+			uint16_t mem_address=0;	
 			
-			//Serial.print("\n");
+
 			
 	// writing zeroes to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
@@ -149,64 +110,34 @@ void Pattern::background_zero()	  // writing ones in ascending address order
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						//Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
 						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
-						
+						for(int i= 22;i<38; i++){
+							memory_address = mem_address%2;
+							digitalWrite(i, memory_address);
+							mem_address = mem_address/2;
+							// Serial.print(memory_address);
+						}
+
 						write_control();
 
 						
-						//writing ones to data pins
+						//writing zeroes to data pins
 						for(int i=38; i<46; i++)
 							{
 							digitalWrite(i, LOW);
 							
 							}
 							write_init();
-						//Serial.print(00);
-						
-							//Serial.print("   ");	// provide spaces for each memory cell
 						
 						
-									if(mem_address_x==255) 
-									{
-										break;
-									}
+
+						
+						
+								if(mem_address_x==255) 
+								{
+									break;
+								}
+					mem_address++;
 					}
 					
 					
@@ -226,24 +157,6 @@ void Pattern::background_one()    // writing ones in ascending address order
 	Serial.println("Writing Background 1");
 	write_init();
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
 
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
@@ -256,25 +169,12 @@ void Pattern::background_one()    // writing ones in ascending address order
 	pinMode(45, OUTPUT);	//D7	
 	
 	
+
+			
+			uint16_t memory_address;
 	
 			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			
-			//Serial.print("\n");
+
 			
 	// writing ones to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
@@ -284,44 +184,16 @@ void Pattern::background_one()    // writing ones in ascending address order
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						//Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
+			
 						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
+						for(int i= 22;i<38; i++){
+							memory_address = mem_address%2;
+							digitalWrite(i, memory_address);
+							mem_address = mem_address/2;
+							// Serial.print(memory_address);
+						}
+						
+
 						
 						write_control();
 						
@@ -334,16 +206,13 @@ void Pattern::background_one()    // writing ones in ascending address order
 							{
 							digitalWrite(i, HIGH);
 							
-							}
-						//Serial.print(0xFF, HEX);
-						
-						//	Serial.print("   ");	// provide spaces for each memory cell
-						
+							}	
 						
 									if(mem_address_x==255) 
 									{
 										break;
 									}
+					mem_address++;
 					}
 					
 			
@@ -368,25 +237,7 @@ void Pattern::diagonal(uint8_t index_number)
 	
 	write_init();
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
 	
-
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
 	pinMode(39, OUTPUT);	//D1
@@ -396,28 +247,11 @@ void Pattern::diagonal(uint8_t index_number)
 	pinMode(43, OUTPUT);	//D5
 	pinMode(44, OUTPUT);	//D6
 	pinMode(45, OUTPUT);	//D7	
+			
+			
+	uint16_t memory_address;
+	uint16_t mem_address;			
 	
-	
-	
-			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			
-			//Serial.print("\n");
-			
 	// writing ones to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
@@ -426,50 +260,20 @@ void Pattern::diagonal(uint8_t index_number)
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 						
-						// Setting up the address
+\
 							
 					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						//Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
 						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
-						
-						write_control();
+						for(int i= 22;i<38; i++){
+							memory_address = mem_address%2;
+							digitalWrite(i, memory_address);
+							mem_address = mem_address/2;
+							// Serial.print(memory_address);
+						}
 						
 
-						
-						
+						write_control();
+							
 						
 						//writing diagonal to data pins
 						uint8_t compare = mem_address_y + index_number;
@@ -488,24 +292,18 @@ void Pattern::diagonal(uint8_t index_number)
 							{
 							digitalWrite(i, LOW);							
 							}
-							
-							//Serial.print(00, HEX);	
+
 						}
 						
 						write_init();
-							//Serial.print("   ");	// provide spaces for each memory cell
 						
 						
 									if(mem_address_x==255) 
 									{
 										break;
 									}
+					mem_address++;				
 					}
-					
-			
-		
-					//Serial.print('\n');
-					
 					if(mem_address_y==255) 
 					{
 					break;
@@ -520,25 +318,6 @@ void Pattern::read()
 	Serial.println("Reading");
 	
 	read_init();
-	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
 
 	//Data Pins Setup 		
 	pinMode(38, INPUT);	//D0
@@ -839,24 +618,6 @@ void Pattern::column_bar()
 	Serial.print("Writing Column Bar");
 	write_init();
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
 
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
@@ -872,22 +633,9 @@ void Pattern::column_bar()
 	
 			
 			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
+			uint16_t memory_address;
+			uint16_t mem_address;	
 	
-			
-			Serial.print("\n");
 			
 	// writing ones to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
@@ -897,46 +645,14 @@ void Pattern::column_bar()
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						//Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
 						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
-						
-						
+						for(int i= 22;i<38; i++){
+							memory_address = mem_address%2;
+							digitalWrite(i, memory_address);
+							mem_address = mem_address/2;
+							// Serial.print(memory_address);
+						}
+				
 						
 						for(int i; i<8; i++)
 						{
@@ -954,34 +670,27 @@ void Pattern::column_bar()
 							{
 							digitalWrite(i, HIGH);
 							}
-							
-							//Serial.print(0xFF, HEX);
-							
+
 						}else{
 							
 								for(int i=38; i<46; i++)
 							{
 							digitalWrite(i, LOW);							
 							}
-							
-							//Serial.print(00, HEX);
+
 							
 							
 						}
 						write_init();
-						
-							//Serial.print("   ");	// provide spaces for each memory cell
+
 						
 						
 									if(mem_address_x==255) 
 									{
 										break;
 									}
+					mem_address++;				
 					}
-					
-			
-		
-					//Serial.print('\n');
 					
 					if(mem_address_y==255) 
 					{
@@ -997,25 +706,7 @@ void Pattern::row_bar()
 	Serial.println("Writing Row Bar");
 	
 	write_init();
-	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
+
 
 	//Data Pins Setup 		
 	pinMode(38, OUTPUT);	//D0
@@ -1029,24 +720,8 @@ void Pattern::row_bar()
 	
 	
 	
-			
-			
-			//setting up data pins
-			
-			int data_pins[8];
-			
-			// writing zeroes in the data pin array
-			
-			uint8_t memory_address[16];
-				
-			// address for x column
-			int8_t	memory_address_x[8];
-			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			
-			Serial.print("\n");
+			uint16_t memory_address;
+			uint16_t mem_address;	
 			
 	// writing ones to the memory location in ascending address order
 	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
@@ -1056,44 +731,14 @@ void Pattern::row_bar()
 					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
 					{
 						
-						// Setting up the address
-							
-					
-						for(int i=0; i<8; i++)
-						{
-							memory_address_y[7-i] = bitRead(mem_address_y,i);
-							memory_address[7-i]	= bitRead(mem_address_y,i);
-							//Serial.print(memory_address[i]);
-							//Serial.print(memory_address_y[i]);
-						}
-						//Serial.print(mem_address_y, HEX);
-						
-						
-						//Serial.print(" ");
-						
-						for(int i=0; i<8; i++)
-						{
-							memory_address_x[7-i] = bitRead(mem_address_x,i);
-							memory_address[15-i]	= bitRead(mem_address_x,i);
-							//Serial.print(memory_address[i+7]);
-							//Serial.print(memory_address_x[i]);
-						}
-						
-						//Serial.print(mem_address_x, HEX);
-						
-				
-						
-						
-						
-						
-						
-						
 						//writing into the address pins
-						for(int i=22; i<38;i++)
-							{	
-							digitalWrite((i),memory_address[37-i]);	
-							//Serial.print(memory_address[j]);
-							}
+						for(int i= 22;i<38; i++){
+							memory_address = mem_address%2;
+							digitalWrite(i, memory_address);
+							mem_address = mem_address/2;
+							// Serial.print(memory_address);
+						}
+				
 						
 						
 						
@@ -1113,8 +758,7 @@ void Pattern::row_bar()
 							{
 							digitalWrite(i, HIGH);
 							}
-							
-							//Serial.print(0xFF, HEX);
+
 							
 						}else{
 							
@@ -1135,12 +779,10 @@ void Pattern::row_bar()
 									{
 										break;
 									}
+									
+					mem_address++;				
 					}
-					
-			
-		
-				
-					
+
 					if(mem_address_y==255) 
 					{
 					break;
@@ -1153,24 +795,11 @@ void write_manual(uint16_t memory_address,uint8_t data)
 {
 	
 	
+	digitalWrite(Chip_Enable1,HIGH);
+	digitalWrite(Chip_Enable2, LOW);
+	digitalWrite(Write_enable, HIGH);
+	digitalWrite(Output_enable, HIGH);
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
 	
 
 	//Data Pins Setup 		
@@ -1184,7 +813,7 @@ void write_manual(uint16_t memory_address,uint8_t data)
 	pinMode(45, OUTPUT);	//D7	
 	
 						
-						uint16_t memory_address_var;
+	uint16_t memory_address_var;
 				
 						//writing into the address pins
 						for(int i=22; i<38;i++)
@@ -1193,7 +822,14 @@ void write_manual(uint16_t memory_address,uint8_t data)
 							digitalWrite((i), memory_address_var);	
 							memory_address = memory_address/2;
 							}
-
+						
+						
+						digitalWrite(Chip_Enable1,LOW);
+						digitalWrite(Chip_Enable2, HIGH);
+						digitalWrite(Write_enable, LOW);
+						digitalWrite(Output_enable, HIGH);
+	
+						
 						uint8_t data_var;
 
 						//writing ones to data pins
@@ -1216,23 +852,7 @@ void Pattern::read_checkerBoard()
 	
 	read_init();
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
+
 	
 
 	//Data Pins Setup 		
@@ -1413,24 +1033,7 @@ void Pattern::read_diagonal(uint8_t index_number)
 	
 	read_init();
 	
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
-	
+
 
 	//Data Pins Setup 		
 	pinMode(38, INPUT);	//D0
