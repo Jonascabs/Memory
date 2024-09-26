@@ -1,77 +1,402 @@
-
-#ifndef Pattern
-#define Pattern
+#ifndef Pattern_cpp
+#define Pattern_cpp
 
 
 #include <Pattern.h> //include the declaration for this class
 #include <Arduino.h>
-const int Chip_Enable1 = 41
-const int Chip_Enable2 = 43
-const int Write_enable = 45
-const int Read_enable  = 47
+
 
 
 //<<constructor>>
 Pattern::Pattern()
 {
-
+	Serial.begin(9600);
 }
 
 //<<destructor>>
 
-//Read
-void Pattern:: read_control()
+//Read Initialize
+void Pattern::read_init()
+{
+	digitalWrite(46,HIGH);
+	digitalWrite(47, LOW);
+	digitalWrite(49, HIGH);
+	digitalWrite(48, LOW);	
+	;
+}
+
+//Read Control
+void Pattern::read_control()
 {
 	
-	pinMode(Chip_Enable1, OUTPUT);
-	pinMode(Chip_Enable2, OUTPUT);
-	pinMode(Write_enable, OUTPUT);
-	pinMode(Read_enable, OUTPUT);
+
 	
-	digitalWrite(Chip_Enable1,LOW);
-	digitalWrite(Chip_Enable2, HIGH);
-	digitalWrite(Write_enable, LOW);
-	digitalWrite(Read_enable, HIGH);
+	digitalWrite(46,LOW);
+	digitalWrite(47, HIGH);
+	digitalWrite(49, HIGH);
+	digitalWrite(48, LOW);
+	
+	
+}
+
+// Write Initialize
+void Pattern::write_init()
+{
+
+	digitalWrite(46,HIGH);
+	digitalWrite(47, LOW);
+	digitalWrite(48, HIGH)
+	digitalWrite(49, HIGH);
 	
 }
 
 
-void Pattern:: write_control()
+// Write Control
+void Pattern::write_control()
 {
-	
-	
-	pinMode(Chip_Enable1, OUTPUT);
-	pinMode(Chip_Enable2, OUTPUT);
-	pinMode(Write_enable, OUTPUT);
-	pinMode(Read_enable, OUTPUT);
-	
-	digitalWrite(Chip_Enable1,LOW);
-	digitalWrite(Chip_Enable2, HIGH);
-	digitalWrite(Write_enable, LOW);
-	digitalWrite(Read_enable, LOW);
+
+
+	digitalWrite(46,LOW);
+	digitalWrite(47, HIGH);
+	digitalWrite(48, LOW);
+	digitalWrite(49, LOW);
+
 }
 
+void write_addr(int mem_address)
+{
+			for(int i=22; i<38;i++)
+              { 
+              digitalWrite(i, mem_address%2); 
+              //Serial.print(mem_address%2);
+              mem_address = mem_address/2;
+              }
+}
+	
 
 //write Zero
-void Pattern::write_zero()
+void Pattern::background_zero()	  
 {
-	//Address Pins Setup
-	pinMode(22, OUTPUT);	//A0	
-	pinMode(23, OUTPUT);	//A1	
-	pinMode(24, OUTPUT);	//A2	
-	pinMode(25, OUTPUT);	//A3	
-	pinMode(26, OUTPUT);	//A4	
-	pinMode(27, OUTPUT);	//A5	
-	pinMode(28, OUTPUT);	//A6	
-	pinMode(29, OUTPUT);	//A7	
-	pinMode(30, OUTPUT);	//A8	
-	pinMode(31, OUTPUT);	//A9	
-	pinMode(32, OUTPUT);	//A10	
-	pinMode(33, OUTPUT);	//A11	
-	pinMode(34, OUTPUT);	//A12	
-	pinMode(35, OUTPUT);	//A13	
-	pinMode(36, OUTPUT);	//A14	
-	pinMode(37, OUTPUT);	//A15	
+	
+	Serial.println("Writing Background Zero");
+	write_init();
+
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
+	
+	
+	
+			
+	// writing zeroes to the memory location in ascending address order
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+
+							
+						//Serial.print(" ");
+						write_control();
+
+						//writing ones to data pins
+						for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, LOW);	
+							}
+							
+					//delay(1);
+						
+						write_init();				
+					
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+					
+					}
+					
+					
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+					
+	}
+	Serial.println("Write Done");
+}	
+	
+
+
+void Pattern::background_one()    // writing ones in ascending address order
+{
+	
+	Serial.println("Writing Background 1");
+	write_init();
+	
+
+
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
+	
+	
+	
+			
+	
+
+			
+	// writing ones to the memory location in ascending address order
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+					
+							
+			
+						write_control();
+						
+						
+						//writing ones to data pins
+						for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, HIGH);
+							
+							}
+
+						write_init();
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+					
+
+					}
+	
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+	}
+
+	Serial.println("Write Done");
+}				
+
+
+
+//write diagonal
+void Pattern::diagonal(uint8_t index_number)
+{
+	Serial.println("Writing Diagonal");
+	
+	
+	write_init();
+
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
+	
+	
+	
+			
+			
+
+		
+
+
+
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+					
+						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+
+						
+						
+						write_control();
+
+						//writing diagonal to data pins
+						uint8_t compare = mem_address_y + index_number;
+						
+						if(mem_address_x == compare)
+						{
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, HIGH);
+							//Serial.print(1);
+							
+							}	
+						
+						}else{
+							
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, LOW);		
+							//Serial.print(0);							
+							}
+						
+							
+
+						}
+
+						write_init();
+						
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+	
+					}
+					
+
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+	
+	}
+	Serial.println("Write Done");
+}				
+
+
+void Pattern::read()
+{
+	Serial.println("Reading");
+	
+	read_init();
+	
+	
+
+	//Data Pins Setup 		
+	pinMode(38, INPUT);	//D0
+	pinMode(39, INPUT);	//D1
+	pinMode(40, INPUT);	//D2
+	pinMode(41, INPUT);	//D3
+	pinMode(42, INPUT);	//D4
+	pinMode(43, INPUT);	//D5
+	pinMode(44, INPUT);	//D6
+	pinMode(45, INPUT);	//D7	
+	
+	
+	
+			
+	Serial.print("   ");
+	
+	
+	for (int header=0; header <256; header++)
+	{
+		Serial.print(header, HEX);
+		Serial.print("   ");
+	}
+
+	Serial.print("\n");
+			
+			
+	
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			Serial.print(mem_address_y, HEX);
+			Serial.print("  ");
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);	
+						write_addr(memory_address);
+						
+						
+						
+						uint8_t read_data;
+						read_control();	
+						//Reading data pins
+						for(int i=38; i<46; i++)
+							{
+	
+								
+								if(digitalRead(i) == 1){
+									
+									bitWrite(read_data,(i-38),1);
+									//Serial.print(1);
+									
+								}
+								
+								else 
+								{
+									
+									bitWrite(read_data,(i-38),0);
+									//Serial.print(0);
+								}								
+							}
+						
+						Serial.print(read_data, HEX);
+						
+						Serial.print("   ");	// provide spaces for each memory cell
+						
+						
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+
+	
+
+					}
+
+					Serial.print('\n');
+					
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+					
+	}	
+	
+	
+	
+	
+}
+
+
+void Pattern::checkerboard()
+{
+	Serial.println("Writing Checkerboard");
+	
+	write_init();
 	
 
 	//Data Pins Setup 		
@@ -86,101 +411,279 @@ void Pattern::write_zero()
 	
 	
 	
-			// Setting up the address
-			uint8_t mem_address;	
-			uint8_t memory_address[16];
-	
-	
-		
-			// address for x column
-			uint8_t	memory_address_x[8];
-	
-	
-			for(int i=0; i<8; i++)
-			{
-				memory_address_x[i] = bitread(mem_address,i);
-				memory_address[i]	= bitread(mem_address,i);
-			}
 			
-			// address for y column
-			uint8_t	memory_address_y[8];
-	
-			for(int i=0; i<8; i++)
-			{
-				memory_address_x[i] = bitread(mem_address,i);
-				memory_address[i+8]	= bitread(mem_address,i);
-			}
-			
-			
-			//setting up data pins
-			uint8_t data_out;
-			uint8_t data_pins[8];
-			for(int i; i<8; i++)
-			{
-				data_pins[i] = 0x00;
-			}
 			
 			
 	
 
-	// writing zeroes to the memory locations
-	for(int i; i<65536; i++)
+			
+	// writing ones to the memory location in ascending address order
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
 	{
-			//address
-			for(int j; j<16;j++)
-			{	
-			digitalWrite((22+j),memory_address[j]);				
-			}
-		
-			//writing zero to data pins
-			for(int k; k<8; k++){
-			digitalWrite((38+k), data_pins[k]);
-			}
-		
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+						
+							
+
+						write_control();
+						
+						uint8_t compare_x = mem_address_x & B00000001;
+						uint8_t compare_y = mem_address_y & B00000001;
+						uint8_t compare_result = compare_x ^ compare_y;
+						
+						if(compare_result == 1)
+						{ 
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, HIGH);
+							
+							}		
+						}	
+						else
+						{							
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, LOW);	
+							}
+						}
+						write_init();
+						
+												
+					if(mem_address_x==255) 
+					{
+					break;
+					}
+			
+					
+					}
+					
+					
+					if(mem_address_y==255) 
+					{
+					break;
+					}
 	}
 
+		Serial.println("Writing Done");
+}		
+
+
+void Pattern::column_bar()
+{
 	
-	
-	
-	/*
-	uint32_t A_0 = 22;
-	uint32_t A_1 = 24;
-	uint32_t A_2 = 26;
-	uint32_t A_3 = 28;
-	uint32_t A_4 = 30;
-	uint32_t A_5 = 32;
-	uint32_t A_6 = 34;
-	uint32_t A_7 = 36;
-	uint32_t A_8 = 38;
-	uint32_t A_9 = 40;
-	uint32_t A_10 = 42;
-	uint32_t A_11 = 44;
-	uint32_t A_12 = 46;
-	uint32_t A_13 = 48;
-	uint32_t A_14 = 50;
-	uint32_t A_15 = 52;
-	uint32_t A_16 = 23;
-	*/
-	
-	
+	Serial.print("Writing Column Bar");
+	write_init();
 	
 	
 
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
 	
-	// Write enable control
-	write_control();
 	
 	
-	
-}
+			
+			
 
 
+		
+	// writing ones to the memory location in ascending address order
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+						
+							
+						
+						write_control();
+						
+						
+						uint8_t columnBar = mem_address_x &B00000001;
+						
+						if(columnBar == 0)
+						{ 
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, HIGH);
+							}
+							
+							//Serial.print(0xFF, HEX);
+							
+						}else{
+							
+								for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, LOW);							
+							}
+							
+							//Serial.print(00, HEX);
+							
+							
+						}
+						write_init();
+						
+							//Serial.print("   ");	// provide spaces for each memory cell
+						
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+		
+					}
+					
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+	}	
+		Serial.println("Writing Done");
+	
+}		
+
+void Pattern::row_bar()
+{
+	
+	Serial.print("Writing Row Bar");
+	write_init();
+	
+
+
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
+	
+	
+	
+			
+	for(uint8_t mem_address_y=0; mem_address_y <256; mem_address_y++)
+	{
+			
+			
+					for(uint8_t mem_address_x=0; mem_address_x <256; mem_address_x++)
+					{
+						uint16_t memory_address = (mem_address_y<<8)|(memory_address_x);
+						write_addr(memory_address);
+
+							
+						
+						write_control();
+						
+						
+						uint8_t rowBar = mem_address_y &B00000001;
+						
+						if(rowBar == 0)
+						{ 
+							for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, HIGH);
+							}
+							
+						
+							
+						}else{
+							
+								for(int i=38; i<46; i++)
+							{
+							digitalWrite(i, LOW);							
+							}
+							
+							
+							
+						}
+						write_init();
+						
+
+						
+						
+									if(mem_address_x==255) 
+									{
+										break;
+									}
+			
+					}
+					
+					if(mem_address_y==255) 
+					{
+					break;
+					}
+	}	
+		Serial.println("Writing Done");
+	
+}	
+
+void write_manual(uint16_t memory_address,uint8_t data)
+{
+	
+
+	//Write Init
+	digitalWrite(46,HIGH);
+	digitalWrite(47, LOW);
+	digitalWrite(49, HIGH);
+	digitalWrite(48, HIGH);
+
+	//Data Pins Setup 		
+	pinMode(38, OUTPUT);	//D0
+	pinMode(39, OUTPUT);	//D1
+	pinMode(40, OUTPUT);	//D2
+	pinMode(41, OUTPUT);	//D3
+	pinMode(42, OUTPUT);	//D4
+	pinMode(43, OUTPUT);	//D5
+	pinMode(44, OUTPUT);	//D6
+	pinMode(45, OUTPUT);	//D7	
+	
+						
+						uint16_t memory_address_var;
 				
-
+							write_addr(memory_address);
+					
+							
+							//Write Control
+							digitalWrite(46,LOW);
+							digitalWrite(47, HIGH);
+							digitalWrite(49, LOW);
+							digitalWrite(48, HIGH);
+	
+						
+						uint8_t data_var;
+					
+						//writing ones to data pins
+						for(int i=38; i<46; i++)
+							{
+							data_var = data % 2;
+							digitalWrite(i, HIGH);
+							data = data/2;
+							}
+						//Serial.print(0xFF, HEX);
+						
+						//	Serial.print("   ");	// provide spaces for each memory cell
+						
+						
 }
+
+
+
+
 
 
 #endif
-
-
-
